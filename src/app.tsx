@@ -15,7 +15,7 @@ export function createApp(config: RigConfig = loadConfig()) {
   app.get('/', (c) =>
     c.html(
       <Layout title="status" lane={lane()}>
-        <StatusBoard status={readStatus(config)} />
+        <StatusBoard status={readStatus(config)} config={config} />
       </Layout>,
     ),
   );
@@ -24,6 +24,12 @@ export function createApp(config: RigConfig = loadConfig()) {
     const night = readNight(config.runsDir, c.req.param('night'));
     if (!night) return c.notFound();
     return c.html(<Layout title={`digest · ${night.night}`} lane={lane()}><Digest night={night} /></Layout>);
+  });
+
+  app.get('/api/digest/:night', (c) => {
+    const night = readNight(config.runsDir, c.req.param('night'));
+    if (!night) return c.notFound();
+    return c.json(night);
   });
 
   return app;
