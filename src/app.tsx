@@ -26,5 +26,11 @@ export function createApp(config: RigConfig = loadConfig()) {
     return c.html(<Layout title={`digest · ${night.night}`} lane={lane()}><Digest night={night} /></Layout>);
   });
 
+  app.get('/api/digest/:night', (c) => {
+    const night = readNight(config.runsDir, c.req.param('night'));
+    if (!night) return c.notFound();
+    return c.json(night.rows);
+  });
+
   return app;
 }
